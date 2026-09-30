@@ -1,0 +1,16 @@
+:root{
+    --color--primary: #75B5A8;
+  --color-secondary: #FAF7F2;
+  --color-tertiary: #F4A896;
+  --color-neutral: #3A3530;
+  --color-danger: #C0392B;
+  --color-warning: #F0A94A;
+  --color-success: #4C8277;
+  --color-text-secondary: #6B655D;
+  --color-surface: #FFFFFF;
+  --color-background: #FAF7F2;
+  --radius-card: 16px;
+  --font-headline: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+}
