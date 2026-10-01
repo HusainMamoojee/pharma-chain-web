@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PharmaChain Admin — Staff</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/create-staff.css">
+</head>
+<body>
+  <div class="dashboard-page">
+
+    <div class="topbar">
+      <div class="topbar-brand">
+        <div class="logo-badge">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="18" height="18" rx="9" fill="white" fill-opacity="0.15"/>
+            <path d="M8 16L16 8" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M9.5 6.5L17.5 14.5C19.2 16.2 19.2 18.9 17.5 20.6C15.8 22.3 13.1 22.3 11.4 20.6L3.4 12.6C1.7 10.9 1.7 8.2 3.4 6.5C5.1 4.8 7.8 4.8 9.5 6.5Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="logo-text">PharmaChain</span>
+      </div>
+      <nav class="topbar-nav">
+        <a href="index.html">Dashboard</a>
+        <a href="batch-minting.html">Batch Minting</a>
+        <a href="stakeholders.html">Stakeholders</a>
+        <a href="create-staff.html" class="active" id="staff-nav-link" hidden>Staff</a>
+      </nav>
+      <div class="topbar-user">
+        <span id="user-name"></span>
+        <button id="logout-btn" class="btn-outline">Sign out</button>
+      </div>
+    </div>
+
+    <div class="page-head">
+      <div>
+        <h1>Create Staff Account</h1>
+        <p>Add a login for a verified organization's team member.</p>
+      </div>
+    </div>
+
+    <section class="panel form-panel" id="create-staff-panel">
+      <form id="create-staff-form">
+        <div class="field-group">
+          <label for="staff-name">Full Name</label>
+          <input type="text" id="staff-name" required placeholder="e.g. Jane Dlamini">
+        </div>
+        <div class="field-row">
+          <div class="field-group">
+            <label for="staff-email">Email</label>
+            <input type="email" id="staff-email" required placeholder="jane@example.com">
+          </div>
+          <div class="field-group">
+            <label for="staff-password">Temporary Password</label>
+            <input type="password" id="staff-password" required minlength="6" placeholder="At least 6 characters">
+          </div>
+        </div>
+        <div class="field-group">
+          <label for="staff-org">Organization</label>
+          <select id="staff-org" required>
+            <option value="" disabled selected>Loading organizations…</option>
+          </select>
+        </div>
+        <div id="create-staff-error" class="error-message" hidden></div>
+        <div id="create-staff-success" class="success-message" hidden></div>
+        <button type="submit" id="create-staff-submit" class="btn-primary">Create Staff Account</button>
+      </form>
+    </section>
+
+  </div>
+
+  <script type="module" src="js/create-staff.js"></script>
+</body>
+</html>

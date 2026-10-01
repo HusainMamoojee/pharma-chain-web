@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PharmaChain Admin — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-page">
+
+    <div class="topbar">
+      <div class="topbar-brand">
+        <div class="logo-badge">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="18" height="18" rx="9" fill="white" fill-opacity="0.15"/>
+            <path d="M8 16L16 8" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M9.5 6.5L17.5 14.5C19.2 16.2 19.2 18.9 17.5 20.6C15.8 22.3 13.1 22.3 11.4 20.6L3.4 12.6C1.7 10.9 1.7 8.2 3.4 6.5C5.1 4.8 7.8 4.8 9.5 6.5Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="logo-text">PharmaChain</span>
+      </div>
+      <nav class="topbar-nav">
+  <a href="index.html">Dashboard</a>
+  <a href="batch-minting.html">Batch Minting</a>
+  <a href="stakeholders.html">Stakeholders</a>
+  <a href="create-staff.html" id="staff-nav-link" hidden>Staff</a>
+</nav>
+      <div class="topbar-user">
+        <span id="user-name"></span>
+        <button id="logout-btn" class="btn-outline">Sign out</button>
+      </div>
+    </div>
+
+    <section class="stats-row">
+      <div class="panel stat-card">
+        <div class="stat-label" id="stat-1-label">Active Batches</div>
+        <div class="stat-value" id="stat-1-value">—</div>
+      </div>
+      <div class="panel stat-card">
+        <div class="stat-label" id="stat-2-label">Pending Dispatches</div>
+        <div class="stat-value" id="stat-2-value">—</div>
+      </div>
+      <div class="panel stat-card">
+        <div class="stat-label" id="stat-3-label">Recent Alerts</div>
+        <div class="stat-value" id="stat-3-value">—</div>
+      </div>
+    </section>
+
+    <section class="panel activity-panel">
+      <h3>Recent Activity</h3>
+      <div id="activity-list">
+        <p class="activity-empty">Loading…</p>
+      </div>
+    </section>
+
+  </div>
+
+  <script type="module" src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PharmaChain Admin — Batch Minting</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/batch-minting.css">
+</head>
+<body>
+  <div class="dashboard-page">
+
+    <div class="topbar">
+      <div class="topbar-brand">
+        <div class="logo-badge">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="3" width="18" height="18" rx="9" fill="white" fill-opacity="0.15"/>
+            <path d="M8 16L16 8" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M9.5 6.5L17.5 14.5C19.2 16.2 19.2 18.9 17.5 20.6C15.8 22.3 13.1 22.3 11.4 20.6L3.4 12.6C1.7 10.9 1.7 8.2 3.4 6.5C5.1 4.8 7.8 4.8 9.5 6.5Z" stroke="white" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="logo-text">PharmaChain</span>
+      </div>
+     <nav class="topbar-nav">
+  <a href="index.html">Dashboard</a>
+  <a href="batch-minting.html">Batch Minting</a>
+  <a href="stakeholders.html">Stakeholders</a>
+  <a href="create-staff.html" id="staff-nav-link" hidden>Staff</a>
+</nav>
+      <div class="topbar-user">
+        <span id="user-name"></span>
+        <button id="logout-btn" class="btn-outline">Sign out</button>
+      </div>
+    </div>
+
+    <section class="panel form-panel">
+      <h2>Mint New Batch</h2>
+      <p class="form-subtitle">Create a new batch record and start its custody trail.</p>
+
+      <form id="mint-form">
+        <div class="field-group">
+          <label for="batch-code">Batch Code</label>
+          <input type="text" id="batch-code" required placeholder="e.g. AMX-2026-0142" autocomplete="off">
+        </div>
+
+        <div class="field-group">
+          <label for="product-name">Product Name</label>
+          <input type="text" id="product-name" required placeholder="e.g. Amoxicillin 500mg">
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label for="quantity">Quantity (units)</label>
+            <input type="number" id="quantity" required min="1" placeholder="1000">
+          </div>
+          <div class="field-group">
+            <label for="expiry-date">Expiry Date</label>
+            <input type="date" id="expiry-date" required>
+          </div>
+        </div>
+
+        <div id="form-error" class="error-message" hidden></div>
+        <div id="form-success" class="success-message" hidden></div>
+
+        <button type="submit" id="mint-btn" class="btn-primary">
+          <span id="mint-btn-text">Mint Batch</span>
+          <span id="mint-btn-spinner" class="spinner" hidden></span>
+        </button>
+      </form>
+    </section>
+
+  </div>
+
+  <script type="module" src="js/batch-minting.js"></script>
+</body>
+</html>

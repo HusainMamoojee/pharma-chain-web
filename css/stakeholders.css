@@ -1,0 +1,166 @@
+.page-head {
+  margin: 8px 0 20px;
+}
+
+.page-head h1 {
+  font-size: 26px;
+}
+
+.page-head p {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 20px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 12px;
+}
+
+.filter-tabs span {
+  cursor: pointer;
+  padding-bottom: 12px;
+  margin-bottom: -13px;
+  border-bottom: 2px solid transparent;
+}
+
+.filter-tabs span.active,
+.filter-tabs span:hover {
+  color: var(--color-primary-dark);
+  border-bottom-color: var(--color-primary);
+}
+
+.stakeholder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.stakeholder-card {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stakeholder-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.stakeholder-name {
+  font-family: var(--font-headline);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.stakeholder-code {
+  font-size: 11.5px;
+  color: var(--color-text-secondary);
+  font-family: ui-monospace, "SF Mono", monospace;
+  margin-top: 2px;
+}
+
+.status-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 4px 9px;
+  border-radius: var(--radius-pill);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex: none;
+}
+
+.status-badge::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.badge-pending { background: var(--color-warning-tint); color: var(--color-warning); }
+.badge-pending::before { background: var(--color-warning); }
+
+.badge-verified { background: var(--color-primary-tint); color: var(--color-success); }
+.badge-verified::before { background: var(--color-success); }
+
+.badge-rejected { background: rgba(192,57,43,0.1); color: var(--color-danger); }
+.badge-rejected::before { background: var(--color-danger); }
+
+.stakeholder-meta {
+  font-size: 12.5px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.stakeholder-meta-row {
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-text-secondary);
+}
+
+.stakeholder-meta-row b {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.stakeholder-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.stakeholder-actions .btn-primary,
+.stakeholder-actions .btn-outline {
+  flex: 1;
+  justify-content: center;
+  padding: 9px 14px;
+  font-size: 12.5px;
+}
+
+.stakeholder-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 13.5px;
+  padding: 40px 20px;
+}
+
+
+.page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.field-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  font-family: var(--font-body);
+  font-size: 14px;
+  background: var(--color-background);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.field-group select:focus {
+  border-color: var(--color-primary);
+}
+
+#add-stakeholder-panel {
+  margin-bottom: 20px;
+}
