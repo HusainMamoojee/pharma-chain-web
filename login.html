@@ -10,37 +10,54 @@
   <link rel="stylesheet" href="css/login.css">
 </head>
 <body>
-  <div class="login-page">
-    <div class="login-card">
+  <div class="site">
+
+    <div class="bg-shapes" aria-hidden="true">
+      <span class="shape shape-top-left"></span>
+      <span class="shape shape-right"></span>
+      <span class="shape shape-bottom"></span>
+      <span class="shape shape-left"></span>
+    </div>
+
+    <header class="site-header">
       <div class="login-logo">
         <div class="logo-badge">P</div>
         <span class="logo-text">PharmaChain</span>
       </div>
+    </header>
 
-      <h1 class="login-title">Admin Portal</h1>
-      <p class="login-subtitle">Sign in to manage the supply chain</p>
+    <main class="login-page">
+      <section class="hero">
+        <h2 class="hero-title">Making medicine <span class="hl-teal">verification</span> <span class="hl-coral">easier</span>.</h2>
+        <p class="hero-text">Helping everyone in the supply chain track, verify and trust the medicines they handle.</p>
+      </section>
 
-      <form id="login-form">
-        <div class="field-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" required autocomplete="email" placeholder="you@company.com">
-        </div>
+      <div class="login-card">
+        <h1 class="login-title">Admin Portal</h1>
+        <p class="login-subtitle">Sign in to manage the supply chain</p>
 
-        <div class="field-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" required autocomplete="current-password" placeholder="••••••••">
-        </div>
+        <form id="login-form">
+          <div class="field-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" required autocomplete="email" placeholder="you@company.com">
+          </div>
 
-        <div id="error-message" class="error-message" hidden></div>
+          <div class="field-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" required autocomplete="current-password" placeholder="••••••••">
+          </div>
 
-        <button type="submit" id="login-btn" class="btn-primary">
-          <span id="btn-text">Sign In</span>
-          <span id="btn-spinner" class="spinner" hidden></span>
-        </button>
-      </form>
+          <div id="error-message" class="error-message" hidden></div>
 
-      <p class="login-footer">Authorized manufacturer, distributor, and governance staff only.</p>
-    </div>
+          <button type="submit" id="login-btn" class="btn-primary">
+            <span id="btn-text">Sign In</span>
+            <span id="btn-spinner" class="spinner" hidden></span>
+          </button>
+        </form>
+
+        <p class="login-footer">Authorized manufacturer, distributor, and governance staff only.</p>
+      </div>
+    </main>
   </div>
 
   <script type="module" src="js/login.js"></script>
