@@ -1,6 +1,7 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { doc, getDoc, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { callGateway } from './gateway.js';
 
 const params = new URLSearchParams(window.location.search);
 const batchCode = params.get('code');
@@ -67,6 +68,7 @@ async function loadBatch(code, profile) {
   loadOrganizationName(data.organizationId);
   loadMintedByName(data.mintedBy);
   watchCustodyEvents(code);
+  loadLedgerHistory(code);
 }
 
 async function loadOrganizationName(organizationId) {
@@ -117,6 +119,62 @@ function renderCustodyTimeline(docs) {
       </div>
     `;
   }).join('');
+}
+
+const orgNameCache = {};
+
+async function orgName(orgId) {
+  if (!orgId) return '—';
+  if (orgNameCache[orgId]) return orgNameCache[orgId];
+  const snap = await getDoc(doc(db, 'stakeholders', orgId));
+  orgNameCache[orgId] = snap.exists() ? snap.data().organizationName : orgId;
+  return orgNameCache[orgId];
+}
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+
+async function loadLedgerHistory(code) {
+  const timeline = document.getElementById('ledger-timeline');
+  const badge = document.getElementById('ledger-badge');
+
+  try {
+    const events = await callGateway(`/batches/${encodeURIComponent(code)}/history`);
+
+    if (events.length === 0) {
+      badge.textContent = 'Not on ledger';
+      badge.className = 'ledger-badge ledger-badge-off';
+      timeline.innerHTML = '<p class="batch-empty">This batch has no ledger records. It was created before the blockchain was added.</p>';
+      return;
+    }
+
+    badge.textContent = `${events.length} record${events.length === 1 ? '' : 's'} on ledger`;
+    badge.className = 'ledger-badge ledger-badge-on';
+
+    const names = await Promise.all(events.map(async (e) => ({
+      org: await orgName(e.orgId),
+      to: e.toOrgId ? await orgName(e.toOrgId) : '',
+    })));
+
+    timeline.innerHTML = events.map((e, i) => `
+      <div class="custody-event">
+        <div class="custody-event-title">${escapeHtml(e.action)}</div>
+        <div class="custody-event-meta">
+          ${escapeHtml(names[i].org)} (${escapeHtml(e.role)})${names[i].to ? ` &rarr; ${escapeHtml(names[i].to)}` : ''}
+          &middot; ${new Date(e.timestamp).toLocaleString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+        </div>
+        <div class="ledger-tx">Transaction ${escapeHtml(e.txId.slice(0, 16))}…</div>
+      </div>
+    `).join('');
+  } catch (error) {
+    console.error('Ledger history failed:', error);
+    badge.textContent = 'Unavailable';
+    badge.className = 'ledger-badge ledger-badge-off';
+    timeline.innerHTML = `<p class="batch-empty">${escapeHtml(error.message)}</p>`;
+  }
 }
 
 function formatDateTime(timestamp) {
