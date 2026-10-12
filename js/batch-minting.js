@@ -2,6 +2,7 @@ import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import {  setDoc, addDoc, collection, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { callGateway } from './gateway.js';
 
 let currentUser = null;
 let currentProfile = null;
@@ -73,15 +74,33 @@ document.getElementById('mint-form').addEventListener('submit', async (e) => {
       return;
     }
 
+        // Register on the blockchain first — if the ledger rejects it, nothing is saved.
+    let ledgerResult;
+    try {
+      ledgerResult = await callGateway('/batches', {
+        method: 'POST',
+        body: { batchCode, productName, expiryDate },
+      });
+    } catch (ledgerError) {
+      console.error('Ledger registration failed:', ledgerError);
+      errorBox.textContent = `The blockchain ledger did not accept this batch: ${ledgerError.message}`;
+      errorBox.hidden = false;
+      return;
+    }
+
     await setDoc(batchRef, {
       productName,
       quantity,
       expiryDate,
       organizationId: currentProfile.organizationId,
       status: 'active',
+      onLedger: true,
+      ledgerRegisteredAt: ledgerResult.registeredAt,
       mintedBy: currentUser.uid,
       createdAt: serverTimestamp(),
     });
+
+  
 
     // First custody event — the batch's trail starts here.
     await addDoc(collection(db, 'batches', batchCode, 'custody_events'), {
@@ -97,7 +116,7 @@ document.getElementById('mint-form').addEventListener('submit', async (e) => {
       timestamp: serverTimestamp(),
     });
 
-    successBox.textContent = `Batch "${batchCode}" minted successfully.`;
+        successBox.textContent = `Batch "${batchCode}" minted and registered on the blockchain ledger.`;
     successBox.hidden = false;
     document.getElementById('mint-form').reset();
   } catch (error) {

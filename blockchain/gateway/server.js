@@ -1,11 +1,14 @@
 'use strict';
 
 const express = require('express');
+const cors = require('cors');
 const { evaluate, submit } = require('./fabric');
 const { enrolStakeholder } = require('./enrol');
 const { requireSignedIn, requireStaff, requireAdmin, getStakeholder } = require('./auth');
 
 const app = express();
+app.use(cors());
+app.use(express.json());
 app.use(express.json());
 
 // Read-only calls need some identity; VerifyBatch/GetBatch/GetBatchHistory check no role.
