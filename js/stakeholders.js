@@ -1,10 +1,13 @@
 import { auth, db } from './firebase-config.js';
+import { callGateway } from './gateway.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { doc, getDoc, collection, query, where, onSnapshot, updateDoc,addDoc,serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { doc, getDoc, collection, query, where, onSnapshot, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 let currentProfile = null;
 let currentFilter = 'all';
 let latestDocs = [];
+
+const grid = document.getElementById('stakeholder-grid');
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -28,8 +31,7 @@ onAuthStateChanged(auth, async (user) => {
     // Staff get a read-only directory — hide the filter tabs and queue actions.
     document.getElementById('filter-tabs').hidden = true;
     document.getElementById('page-subtitle').textContent = 'Verified organizations on the PharmaChain network.';
-    
-  } else{
+  } else {
     document.getElementById('add-stakeholder-btn').hidden = false;
     document.getElementById('staff-nav-link').hidden = false;
   }
@@ -49,7 +51,6 @@ function watchStakeholders(role) {
 }
 
 function renderStakeholders() {
-  const grid = document.getElementById('stakeholder-grid');
   const visible = currentFilter === 'all'
     ? latestDocs
     : latestDocs.filter((d) => d.data().verificationStatus === currentFilter);
@@ -83,11 +84,70 @@ function renderStakeholders() {
             <button class="btn-outline reject-btn" data-id="${d.id}">Reject</button>
           </div>
         ` : ''}
+        ${isAdmin && status === 'verified' ? `
+          <div class="stakeholder-actions">
+            <button class="btn-outline enrol-btn" data-id="${d.id}">Enrol on ledger</button>
+          </div>
+        ` : ''}
       </div>
     `;
   }).join('');
+}
 
-  document.getElementById('add-stakeholder-btn').addEventListener('click', () => {
+// Creates the stakeholder's blockchain identity (safe to run more than once).
+async function enrolOnLedger(stakeholderId) {
+  return callGateway(`/admin/stakeholders/${encodeURIComponent(stakeholderId)}/enrol`, { method: 'POST' });
+}
+
+async function setVerification(stakeholderId, newStatus) {
+  try {
+    await updateDoc(doc(db, 'stakeholders', stakeholderId), { verificationStatus: newStatus });
+  } catch (error) {
+    console.error('Failed to update stakeholder status:', error);
+    alert('Could not update this stakeholder. Please try again.');
+    return;
+  }
+
+  if (newStatus === 'verified') {
+    try {
+      await enrolOnLedger(stakeholderId);
+    } catch (error) {
+      console.error('Ledger enrolment failed:', error);
+      alert(`Approved, but the ledger identity could not be created: ${error.message}\n\nUse "Enrol on ledger" on the card to try again.`);
+    }
+  }
+}
+
+// One click handler for all card buttons (instead of re-attaching on every render).
+grid.addEventListener('click', async (e) => {
+  if (!currentProfile || currentProfile.role !== 'admin') return;
+
+  const approve = e.target.closest('.approve-btn');
+  const reject = e.target.closest('.reject-btn');
+  const enrol = e.target.closest('.enrol-btn');
+
+  if (approve) {
+    approve.disabled = true;
+    await setVerification(approve.dataset.id, 'verified');
+  } else if (reject) {
+    reject.disabled = true;
+    await setVerification(reject.dataset.id, 'rejected');
+  } else if (enrol) {
+    enrol.disabled = true;
+    enrol.textContent = 'Working...';
+    try {
+      const result = await enrolOnLedger(enrol.dataset.id);
+      alert(result.alreadyEnrolled ? 'This organisation already has a ledger identity.' : 'Ledger identity created.');
+    } catch (error) {
+      console.error('Ledger enrolment failed:', error);
+      alert(`Could not create the ledger identity: ${error.message}`);
+    }
+    enrol.disabled = false;
+    enrol.textContent = 'Enrol on ledger';
+  }
+});
+
+document.getElementById('add-stakeholder-btn').addEventListener('click', () => {
   document.getElementById('add-stakeholder-panel').hidden = false;
 });
 
@@ -111,8 +171,9 @@ document.getElementById('add-stakeholder-form').addEventListener('submit', async
   submitBtn.disabled = true;
   submitBtn.textContent = 'Saving...';
 
+  let newId = null;
   try {
-    await addDoc(collection(db, 'stakeholders'), {
+    const ref = await addDoc(collection(db, 'stakeholders'), {
       organizationName,
       contactEmail,
       organizationType,
@@ -120,6 +181,7 @@ document.getElementById('add-stakeholder-form').addEventListener('submit', async
       createdBy: currentProfile ? currentProfile.email : null,
       createdAt: serverTimestamp(),
     });
+    newId = ref.id;
 
     document.getElementById('add-stakeholder-panel').hidden = true;
     document.getElementById('add-stakeholder-form').reset();
@@ -131,25 +193,16 @@ document.getElementById('add-stakeholder-form').addEventListener('submit', async
     submitBtn.disabled = false;
     submitBtn.textContent = 'Save';
   }
+
+  if (newId && verificationStatus === 'verified') {
+    try {
+      await enrolOnLedger(newId);
+    } catch (error) {
+      console.error('Ledger enrolment failed:', error);
+      alert(`Saved, but the ledger identity could not be created: ${error.message}\n\nUse "Enrol on ledger" on the card to try again.`);
+    }
+  }
 });
-
-  if (currentProfile.role === 'admin') {
-    grid.querySelectorAll('.approve-btn').forEach((btn) => {
-      btn.addEventListener('click', () => setVerification(btn.dataset.id, 'verified'));
-    });
-    grid.querySelectorAll('.reject-btn').forEach((btn) => {
-      btn.addEventListener('click', () => setVerification(btn.dataset.id, 'rejected'));
-    });
-  }
-}
-
-async function setVerification(stakeholderId, newStatus) {
-  try {
-    await updateDoc(doc(db, 'stakeholders', stakeholderId), { verificationStatus: newStatus });
-  } catch (error) {
-    console.error('Failed to update stakeholder status:', error);
-  }
-}
 
 document.getElementById('filter-tabs').addEventListener('click', (e) => {
   const tab = e.target.closest('[data-filter]');
