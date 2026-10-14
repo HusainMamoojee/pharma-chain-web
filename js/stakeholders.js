@@ -7,6 +7,9 @@ let currentProfile = null;
 let currentFilter = 'all';
 let latestDocs = [];
 
+let enrolledIds = new Set();
+let enrolledLoaded = false;
+
 const grid = document.getElementById('stakeholder-grid');
 
 onAuthStateChanged(auth, async (user) => {
@@ -37,6 +40,7 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   watchStakeholders(profile.role);
+   if (profile.role === 'admin') refreshEnrolled();
 });
 
 function watchStakeholders(role) {
@@ -84,9 +88,11 @@ function renderStakeholders() {
             <button class="btn-outline reject-btn" data-id="${d.id}">Reject</button>
           </div>
         ` : ''}
-        ${isAdmin && status === 'verified' ? `
+            ${isAdmin && status === 'verified' && enrolledLoaded ? `
           <div class="stakeholder-actions">
-            <button class="btn-outline enrol-btn" data-id="${d.id}">Enrol on ledger</button>
+            ${enrolledIds.has(d.id)
+              ? '<span class="ledger-enrolled">✓ Enrolled on ledger</span>'
+              : `<button class="btn-outline enrol-btn" data-id="${d.id}">Enrol on ledger</button>`}
           </div>
         ` : ''}
       </div>
@@ -95,10 +101,24 @@ function renderStakeholders() {
 }
 
 // Creates the stakeholder's blockchain identity (safe to run more than once).
-async function enrolOnLedger(stakeholderId) {
-  return callGateway(`/admin/stakeholders/${encodeURIComponent(stakeholderId)}/enrol`, { method: 'POST' });
+// Asks the gateway which organisations already have a ledger identity.
+async function refreshEnrolled() {
+  try {
+    const result = await callGateway('/admin/enrolled');
+    enrolledIds = new Set(result.ids);
+    enrolledLoaded = true;
+  } catch (error) {
+    console.error('Could not load ledger enrolments:', error);
+  }
+  renderStakeholders();
 }
 
+// Creates the stakeholder's blockchain identity (safe to run more than once).
+async function enrolOnLedger(stakeholderId) {
+  const result = await callGateway(`/admin/stakeholders/${encodeURIComponent(stakeholderId)}/enrol`, { method: 'POST' });
+  await refreshEnrolled();
+  return result;
+}
 async function setVerification(stakeholderId, newStatus) {
   try {
     await updateDoc(doc(db, 'stakeholders', stakeholderId), { verificationStatus: newStatus });
