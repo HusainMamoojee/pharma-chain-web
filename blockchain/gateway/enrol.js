@@ -73,4 +73,22 @@ async function enrolStakeholder(stakeholderId, role) {
     return { enrolled: true, alreadyEnrolled: false };
 }
 
-module.exports = { enrolStakeholder };
+
+// IDs of every organisation that already has a ledger identity.
+async function listEnrolled() {
+    let names;
+    try {
+        names = await fs.readdir(WALLET_DIR);
+    } catch (e) {
+        return [];
+    }
+    const ids = [];
+    for (const name of names) {
+        if (await exists(path.join(WALLET_DIR, name, 'msp', 'signcerts', 'cert.pem'))) {
+            ids.push(name);
+        }
+    }
+    return ids;
+}
+
+module.exports = { enrolStakeholder, listEnrolled };

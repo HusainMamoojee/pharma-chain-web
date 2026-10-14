@@ -1,9 +1,11 @@
 'use strict';
 
+const { enrolStakeholder, listEnrolled } = require('./enrol');
+
 const express = require('express');
 const cors = require('cors');
 const { evaluate, submit } = require('./fabric');
-const { enrolStakeholder } = require('./enrol');
+
 const { requireSignedIn, requireStaff, requireAdmin, getStakeholder } = require('./auth');
 
 const app = express();
@@ -45,6 +47,13 @@ app.get('/verify/:batchCode', requireSignedIn, route(async (req) =>
 
 app.get('/batches/:batchCode/history', requireSignedIn, route(async (req) =>
     JSON.parse(await evaluate(READER, 'GetBatchHistory', req.params.batchCode))));
+
+
+
+
+// Which organisations already have a ledger identity (admin only).
+app.get('/admin/enrolled', requireAdmin, route(async () => ({ ids: await listEnrolled() })));
+
 
 // Staff of a verified organisation. Their organisation and role come from Firestore, not the request.
 app.post('/batches', requireStaff, route(async (req) => {
