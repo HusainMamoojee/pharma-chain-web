@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PharmaChain — QR Generator</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+
+  <style>
+    .qr-panel {
+      max-width: 650px;
+      margin: 24px auto;
+      padding: 28px;
+    }
+
+    .qr-form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .qr-form label {
+      font-weight: 600;
+    }
+
+    .qr-form select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font: inherit;
+    }
+
+    .qr-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .qr-preview {
+      display: none;
+      margin-top: 28px;
+      text-align: center;
+    }
+
+    #qrcode {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      margin: 16px auto;
+      background: white;
+      border-radius: 12px;
+      min-height: 40px;
+    }
+
+    #qrcode img,
+    #qrcode canvas {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .qr-message {
+      margin-top: 16px;
+    }
+
+    .qr-message:empty {
+      display: none;
+    }
+
+    .qr-product-details {
+      margin-top: 12px;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-shapes" aria-hidden="true">
+    <span class="shape shape-top-left"></span>
+    <span class="shape shape-right"></span>
+    <span class="shape shape-bottom"></span>
+    <span class="shape shape-left"></span>
+  </div>
+
+  <div class="dashboard-page">
+    <div class="topbar">
+      <div class="topbar-brand">
+        <div class="logo-badge">P</div>
+        <span class="logo-text">PharmaChain</span>
+      </div>
+
+      <nav class="topbar-nav">
+        <a href="index.html">Dashboard</a>
+        <a href="batch-minting.html">Batch Minting</a>
+        <a href="batches.html">Batches</a>
+        <a href="qr-generator.html" class="active">QR Generator</a>
+        <a href="stakeholders.html">Stakeholders</a>
+        <a href="create-staff.html" id="staff-nav-link" hidden>Staff</a>
+      </nav>
+
+      <div class="topbar-user">
+        <span id="user-name"></span>
+        <button id="logout-btn" class="btn-outline">Sign out</button>
+      </div>
+    </div>
+
+    <div class="page-head">
+      <h1>QR Code Generator</h1>
+      <p>Generate a QR code for an existing medication batch.</p>
+    </div>
+
+    <section class="panel qr-panel">
+      <form id="qr-form" class="qr-form">
+        <div>
+          <label for="batch-select">Select medication batch</label>
+          <select id="batch-select" required>
+            <option value="">Loading batches...</option>
+          </select>
+        </div>
+
+        <div id="batch-details" class="qr-product-details"></div>
+
+        <button id="generate-btn" type="submit" class="btn-primary">
+          Generate QR Code
+        </button>
+      </form>
+
+      <p id="qr-error" class="qr-message" role="alert"></p>
+
+      <section id="qr-preview" class="qr-preview">
+        <h2>Medication QR Code</h2>
+        <p>Scan this code with your PharmaChain verification app.</p>
+
+        <div id="qrcode"></div>
+
+        <div class="qr-actions">
+          <button id="download-btn" type="button" class="btn-primary">
+            Download QR Code
+          </button>
+        </div>
+
+        <p id="qr-payload" class="qr-message"></p>
+      </section>
+    </section>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script type="module" src="js/qr-generator.js"></script>
+</body>
+</html>
