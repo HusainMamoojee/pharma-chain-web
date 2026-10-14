@@ -1,6 +1,6 @@
 import { auth, db } from './firebase-config.js';
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
-import { doc, getDoc, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 import { callGateway } from './gateway.js';
 
 const params = new URLSearchParams(window.location.search);
@@ -67,7 +67,6 @@ async function loadBatch(code, profile) {
 
   loadOrganizationName(data.organizationId);
   loadMintedByName(data.mintedBy);
-  watchCustodyEvents(code);
   loadLedgerHistory(code);
 }
 
@@ -89,36 +88,6 @@ async function loadMintedByName(uid) {
   }
   const userSnap = await getDoc(doc(db, 'users', uid));
   field.textContent = userSnap.exists() ? (userSnap.data().fullName || userSnap.data().email) : uid;
-}
-
-function watchCustodyEvents(code) {
-  const eventsQuery = query(
-    collection(db, 'batches', code, 'custody_events'),
-    orderBy('timestamp', 'asc')
-  );
-
-  onSnapshot(eventsQuery, (snap) => {
-    renderCustodyTimeline(snap.docs);
-  }, (error) => console.error('custody_events query failed:', error));
-}
-
-function renderCustodyTimeline(docs) {
-  const timeline = document.getElementById('custody-timeline');
-
-  if (docs.length === 0) {
-    timeline.innerHTML = '<p class="batch-empty">No custody events recorded.</p>';
-    return;
-  }
-
-  timeline.innerHTML = docs.map((d) => {
-    const data = d.data();
-    return `
-      <div class="custody-event">
-        <div class="custody-event-title">${data.event || 'Event'}</div>
-        <div class="custody-event-meta">${formatDateTime(data.timestamp)}</div>
-      </div>
-    `;
-  }).join('');
 }
 
 const orgNameCache = {};
