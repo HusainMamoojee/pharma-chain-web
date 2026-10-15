@@ -1,0 +1,27 @@
+.form-panel {
+  padding: 28px 32px;
+  max-width: 520px;
+}
+
+.form-panel h2 {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.form-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 13.5px;
+  margin-bottom: 24px;
+}
+
+.success-message {
+  background: rgba(127,181,168,0.12);
+  color: var(--color-primary-dark);
+  border-radius: var(--radius-input);
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+
+

@@ -1,16 +1,249 @@
-:root{
-    --color--primary: #75B5A8;
-  --color-secondary: #FAF7F2;
-  --color-tertiary: #F4A896;
-  --color-neutral: #3A3530;
-  --color-danger: #C0392B;
-  --color-warning: #F0A94A;
-  --color-success: #4C8277;
-  --color-text-secondary: #6B655D;
-  --color-surface: #FFFFFF;
-  --color-background: #FAF7F2;
-  --radius-card: 16px;
-  --font-headline: 'Space Grotesk', sans-serif;
-  --font-body: 'Inter', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
+/*
+  Shared design tokens for the PharmaChain admin portal.
+  Every page links this before its own page-specific stylesheet
+  (theme.css first, then e.g. login.css / dashboard.css) so the
+  variables below are always available.
+*/
+:root {
+  /* Brand palette */
+  --color-primary: #7FB5A8;        /* sage teal */
+  --color-primary-dark: #5F9787;
+  --color-primary-tint: #E4EFEC;
+  --color-secondary: #FAF7F2;      /* warm cream */
+  --color-tertiary: #F4A896;       /* coral/salmon */
+  --color-tertiary-dark: #E08872;
+  --color-neutral: #3A3530;        /* dark warm gray */
+
+  --color-background: var(--color-secondary);
+  --color-surface: #FFFFFF;
+  --color-text-primary: var(--color-neutral);
+  --color-text-secondary: #6B655D;
+  --color-border: #DCD5C9;
+  --color-danger: #C0392B;
+  --color-success: #3E8F63;
+  --color-warning: #C98A2E;
+  --color-warning-tint: #FBEFDC;
+
+  /* Type */
+  --font-headline: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
+  /* Shape */
+  --radius-card: 18px;
+  --radius-panel: 12px;
+  --radius-input: 8px;
+  --radius-btn: 14px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 1px 2px rgba(58,53,48,.05), 0 8px 24px -12px rgba(58,53,48,.14);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  background: var(--color-background);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-headline);
+  margin: 0;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+/* ---------- Shared button styles ---------- */
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  border: none;
+  border-radius: var(--radius-btn);
+  transition: background 0.2s ease, opacity 0.15s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--color-primary-dark), var(--color-primary));
+}
+
+.btn-primary:active {
+  transform: scale(0.99);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-tint);
+}
+
+/* ---------- Shared panel/card ---------- */
+
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-card);
+}
+
+/* ---------- Spinner (used on login + async buttons) ---------- */
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+
+.field-group {
+  margin-bottom: 16px;
+}
+
+.field-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--color-text-secondary);
+}
+
+.field-group input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  font-family: var(--font-body);
+  font-size: 14px;
+  background: var(--color-background);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.field-group input:focus {
+  border-color: var(--color-primary);
+}
+
+.error-message {
+  background: rgba(192,57,43,0.08);
+  color: var(--color-danger);
+  border-radius: var(--radius-input);
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+
+.field-row {
+  display: flex;
+  gap: 14px;
+}
+
+.field-row .field-group {
+  flex: 1;
+}
+
+
+.form-panel {
+  padding: 28px 32px;
+  max-width: 520px;
+}
+
+.form-panel h2 {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.form-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 13.5px;
+  margin-bottom: 24px;
+}
+
+
+.field-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-input);
+  font-family: var(--font-body);
+  font-size: 14px;
+  background: var(--color-background);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.field-group select:focus {
+  border-color: var(--color-primary);
+}
+
+
+.success-message {
+  background: rgba(127,181,168,0.12);
+  color: var(--color-primary-dark);
+  border-radius: var(--radius-input);
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 16px;
 }
