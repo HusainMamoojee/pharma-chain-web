@@ -1,5 +1,5 @@
-
 import { auth, db } from './firebase-config.js';
+import { callGateway } from './gateway.js';
 
 import {
   onAuthStateChanged,
@@ -176,7 +176,7 @@ function updateBatchDetails() {
     `Expiry: ${batch.expiryDate}`;
 }
 
-qrForm.addEventListener('submit', (event) => {
+qrForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   clearError();
 
@@ -192,10 +192,25 @@ qrForm.addEventListener('submit', (event) => {
     return;
   }
 
+  // Ask the ledger (through the gateway) whether this batch really exists.
+  generateBtn.disabled = true;
+  try {
+    const check = await callGateway(`/verify/${encodeURIComponent(batch.id)}`);
+    if (!check.exists) {
+      showError('This batch is not on the blockchain ledger, so no QR code was generated.');
+      return;
+    }
+  } catch (error) {
+    showError(`Could not check the ledger: ${error.message}`);
+    return;
+  } finally {
+    generateBtn.disabled = false;
+  }
+
   selectedBatch = batch;
 
-  // The Flutter scanner should parse this identifier and query Firestore.
-  const payload = `PHARMACHAIN:BATCH:${batch.id}`;
+  // The app scans this text and asks the gateway to verify it against the ledger.
+  const payload = batch.id;
 
   qrContainer.replaceChildren();
 
