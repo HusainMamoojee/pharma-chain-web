@@ -1,7 +1,7 @@
 import { auth } from './firebase-config.js';
 
 // Where the blockchain gateway is running. Change this when it moves to a server.
-export const GATEWAY_URL = 'http://localhost:3000';
+const GATEWAY_URL = 'https://pharmachain-gw.southafricanorth.cloudapp.azure.com';
 
 export async function callGateway(path, { method = 'GET', body } = {}) {
   const user = auth.currentUser;
