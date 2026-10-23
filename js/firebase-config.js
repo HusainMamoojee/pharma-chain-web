@@ -1,8 +1,11 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-firestore.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.x.x/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+
 
 const firebaseConfig = {
+
   apiKey: "AIzaSyD1g3z7h30NqhA9GwER7UjsELXVxXnXdiY",
   authDomain: "pharma-chain-e4cc2.firebaseapp.com",
   projectId: "pharma-chain-e4cc2",
@@ -19,3 +22,7 @@ const app = initializeApp(firebaseConfig);
 //exporting the services to other files that need firebase services
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+
+
+
+export { firebaseConfig };
